@@ -7,3 +7,5 @@ indy: board.o
 clean:
 	rm indy
 	rm *.o
+
+fresh: clean all
