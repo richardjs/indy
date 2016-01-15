@@ -13,8 +13,8 @@ Board bits layout (each color gets its own board):
   12     17
 13  14 18  19
 
-20th bit represents the color's signal peg, with a 1 indicating the
-initial quad is not available, and a 0 indicating it is available.
+20th bit represents the color's signal peg, with a 0 indicating the
+initial quad is not available, and a 1 indicating it is available.
 */
 
 typedef uint32_t bitboard;
@@ -22,7 +22,6 @@ typedef uint32_t bitboard;
 enum Color{RED=0, BLU};
 
 extern const int MAX_MOVES;
-extern const bitboard MOVES[20];
 
 struct Board{
 	bitboard bits[2];
@@ -31,6 +30,8 @@ struct Board{
 
 struct Board *Board_create();
 void Board_destroy();
-int Board_moves();
+
+int Board_moves(const struct Board *board, bitboard moves[]);
+void Board_move(struct Board *board, bitboard move);
 
 #endif
