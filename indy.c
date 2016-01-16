@@ -5,8 +5,9 @@
 int main(){
 	struct Board *board = Board_create();
 	bitboard moves[MAX_MOVES];
-	Board_moves(board, moves);
+	int count = Board_moves(board, moves, true);
 	Board_move(board, moves[0]);
+	printf("%d\n", count);
 	Board_destroy(board);
 	return 0;
 }

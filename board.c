@@ -107,7 +107,7 @@ void Board_destroy(struct Board *board){
 	return;
 }
 
-int Board_moves(const struct Board *board, bitboard moves[MAX_MOVES]){
+int Board_moves(const struct Board *board, bitboard moves[MAX_MOVES], bool searchForWin){
 	int count = 0;
 	int space = 0;
 	for(int i = 0; i < 5; i++){
@@ -117,9 +117,21 @@ int Board_moves(const struct Board *board, bitboard moves[MAX_MOVES]){
 		int moveSpace = 0;
 		while(openMoves >> moveSpace){
 			moveSpace = bitscan(openMoves >> moveSpace) + moveSpace;
+
 			moves[count] = board->bits[board->turn];
 			moves[count] &= ~(1 << space);
 			moves[count] |= 1 << moveSpace;
+
+			if(searchForWin){
+				for(int  i = 0; i < 16; i++){
+					if((moves[count] & ALL_WINS[i]) == ALL_WINS[i]
+							|| (moves[count] & COLOR_WINS[board->turn][i]) == COLOR_WINS[board->turn][i]){
+						moves[0] = moves[count];
+						return -1;
+					}
+				}
+			}
+
 			count++;
 			moveSpace++;
 		}

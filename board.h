@@ -1,6 +1,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#include "stdbool.h"
 #include "stdint.h"
 
 /*
@@ -31,7 +32,7 @@ struct Board{
 struct Board *Board_create();
 void Board_destroy();
 
-int Board_moves(const struct Board *board, bitboard moves[]);
+int Board_moves(const struct Board *board, bitboard moves[], bool searchForWin);
 void Board_move(struct Board *board, bitboard move);
 
 #endif
