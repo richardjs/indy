@@ -7,7 +7,7 @@
 
 #define bitscan(x) __builtin_ctz(x)
 
-const int MAX_MOVES = 5;
+const int MAX_MOVES = 25;
 
 // Maps moves available from each space (indexed by space number -- see board.h).
 const bitboard MOVES[20] = {
