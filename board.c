@@ -3,8 +3,6 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include <stdio.h>
-
 #define bitscan(x) __builtin_ctz(x)
 
 const int MAX_MOVES = 25;
@@ -92,12 +90,19 @@ const bitboard COLOR_WINS[2][16] = {{
 	0b000000000000000001011
 }};
 
+// Initial positions
+const bitboard START_POSITIONS[2] = {
+	0b000000000000000011111,
+	0b011111000000000000000
+};
+
+
 struct Board *Board_create(){
 	struct Board *board = malloc(sizeof(struct Board));
 	assert(board != NULL);
 
-	board->bits[RED] = 0b000000000000000011111;
-	board->bits[BLU] = 0b011111000000000000000;
+	board->bits[RED] = START_POSITIONS[RED];
+	board->bits[BLU] = START_POSITIONS[BLU];
 
 	return board;
 }
@@ -130,6 +135,11 @@ int Board_moves(const struct Board *board, bitboard moves[MAX_MOVES], bool searc
 						return -1;
 					}
 				}
+			}
+
+			// Check for empty start quad, for signal pegs
+			if((moves[count] & START_POSITIONS[board->turn]) == 0){
+				moves[count] |= 1 << 20;
 			}
 
 			count++;
