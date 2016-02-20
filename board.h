@@ -35,4 +35,6 @@ void Board_destroy();
 int Board_moves(const struct Board *board, bitboard moves[], bool searchForWin);
 void Board_move(struct Board *board, bitboard move);
 
+void moveQBN(bitboard start, bitboard end, char *out);
+
 #endif

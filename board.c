@@ -2,6 +2,7 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define bitscan(x) __builtin_ctz(x)
 
@@ -96,6 +97,28 @@ const bitboard START_POSITIONS[2] = {
 	0b011111000000000000000
 };
 
+const char *SPACE_NAMES[20] = {
+	"A1",
+	"A2",
+	"A3",
+	"A4",
+	"A5",
+	"B1",
+	"B2",
+	"B3",
+	"B4",
+	"B5",
+	"C1",
+	"C2",
+	"C3",
+	"C4",
+	"C5",
+	"D1",
+	"D2",
+	"D3",
+	"D4",
+	"D5"
+};
 
 struct Board *Board_create(){
 	struct Board *board = malloc(sizeof(struct Board));
@@ -154,4 +177,19 @@ int Board_moves(const struct Board *board, bitboard moves[MAX_MOVES], bool searc
 void Board_move(struct Board *board, bitboard move){
 	board->bits[board->turn] = move;
 	board->turn = !board->turn;
+}
+
+void moveQBN(bitboard start, bitboard end, char *out){
+	bitboard movedSpaces = start ^ end;
+	int s1 = bitscan(movedSpaces);
+	int s2 = bitscan(movedSpaces >> (s1 + 1)) + s1 + 1;
+	if(((1 << s1) & end) > 0){
+		int t = s1;
+		s1 = s2;
+		s2 = t;
+	}
+	strncpy(out, SPACE_NAMES[s1], 2);
+	out[2] = '-';
+	strncpy(out+3, SPACE_NAMES[s2], 2);
+	out[5] = '\0';
 }
