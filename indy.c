@@ -1,4 +1,5 @@
 #include "board.h"
+#include "minimax.h"
 #include "montecarlo.h"
 
 #include <stdio.h>
@@ -43,8 +44,11 @@ int main(int argc, char *argv[]){
 	}
 
 	// Seed random and run Monte Carlo algorithm
-	srand(time(NULL));
-	bitboard move = montecarlo_think(board);
+	//srand(time(NULL));
+	//bitboard move = montecarlo_think(board);
+
+	// Run minimax search
+	bitboard move = minimax_think(board);
 
 	// Print move as QMN
 	char qmn[6];
