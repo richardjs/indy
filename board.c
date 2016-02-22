@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <stdio.h>
+
 #define bitscan(x) __builtin_ctz(x)
 
 // Maps moves available from each space (indexed by space number -- see board.h).
@@ -134,36 +136,60 @@ void Board_destroy(struct Board *board){
 }
 
 int Board_moves(const struct Board *board, bitboard moves[MAX_MOVES], bool searchForWin){
+	// count will equal the number of available moves
 	int count = 0;
+
+	// moveSpace keeps track of our location in the board->bits[board->turn] array
 	int space = 0;
+	// For each of the player's pins
 	for(int i = 0; i < 5; i++){
+		// Find the next pin, and assign the location to space
 		space = bitscan(board->bits[board->turn] >> space) + space;
-		bitboard openMoves = MOVES[space] & ~(board->bits[board->turn] | board->bits[!board->turn]);
-		
+		// Find moves from that space
+		bitboard openMoves = MOVES[space];
+		// Remove moves that are blocked by a pin
+		openMoves &= ~(board->bits[board->turn] | board->bits[!board->turn]);
+
+		// moveSpace keeps track of our location in the openMoves array
 		int moveSpace = 0;
+		// For each moveable space in openMoves
 		while(openMoves >> moveSpace){
+			// Find the next moveable `space
 			moveSpace = bitscan(openMoves >> moveSpace) + moveSpace;
 
-			moves[count] = board->bits[board->turn];
-			moves[count] &= ~(1 << space);
-			moves[count] |= 1 << moveSpace;
+			// Build the new bitboard after the move has been made
+			// Start with the current board
+			bitboard move = board->bits[board->turn];
+			// Take the pin off the current space
+			move &= ~(1 << space);
+			// Place it on the move space
+			move |= 1 << moveSpace;
 
+			// If we're searching for a win
 			if(searchForWin){
+				// Loop through the ALL_WINS and COLOR_WINS[board->turn] arrays looking for win positions
 				for(int  i = 0; i < 16; i++){
-					if((moves[count] & ALL_WINS[i]) == ALL_WINS[i]
-							|| (moves[count] & COLOR_WINS[board->turn][i]) == COLOR_WINS[board->turn][i]){
-						moves[0] = moves[count];
+					if((move & ALL_WINS[i]) == ALL_WINS[i]
+							|| (move & COLOR_WINS[board->turn][i]) == COLOR_WINS[board->turn][i]){
+						if(moves){
+							moves[0] = move;
+						}
 						return -1;
 					}
 				}
 			}
 
 			// Check for empty start quad, for signal pegs
-			if((moves[count] & START_POSITIONS[board->turn]) == 0){
-				moves[count] |= 1 << 20;
+			if((move & START_POSITIONS[board->turn]) == 0){
+				move |= 1 << 20;
 			}
 
+			// Assign move to output array
+			if(moves){
+				moves[count] = move;
+			}
 			count++;
+
 			moveSpace++;
 		}
 
