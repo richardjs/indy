@@ -18,11 +18,11 @@ Board bits layout (each color gets its own board):
 initial quad is not available, and a 1 indicating it is available.
 */
 
+#define MAX_MOVES 30
+
 typedef uint32_t bitboard;
 
 enum Color{RED=0, BLU};
-
-extern const int MAX_MOVES;
 
 struct Board{
 	bitboard bits[2];

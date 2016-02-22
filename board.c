@@ -6,8 +6,6 @@
 
 #define bitscan(x) __builtin_ctz(x)
 
-const int MAX_MOVES = 30;
-
 // Maps moves available from each space (indexed by space number -- see board.h).
 const bitboard MOVES[20] = {
 	0b000000000000000001110,
@@ -171,6 +169,7 @@ int Board_moves(const struct Board *board, bitboard moves[MAX_MOVES], bool searc
 
 		space++;
 	}
+
 	return count;
 }
 
