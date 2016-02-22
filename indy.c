@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
 int main(int argc, char *argv[]){
 	// Validate input
@@ -18,6 +17,8 @@ int main(int argc, char *argv[]){
 		puts("invalid qbn");
 		return 1;
 	}
+
+	fprintf(stderr, "---\ninput:\t%s\n", qbn);
 
 	// Build board from QBN
 	struct Board *board = Board_create();
@@ -43,16 +44,32 @@ int main(int argc, char *argv[]){
 		board->turn = BLU;
 	}
 
+	bitboard moves[MAX_MOVES];
+	bitboard move = 0;
+	int count = Board_moves(board, moves, true);
+	if(count == 0){
+		fprintf(stderr, "no moves\n");
+		return 0;
+	}
+	if(count < 0){
+		fprintf(stderr, "taking winning move\n");
+		move = moves[0];
+	}
+
 	// Seed random and run Monte Carlo algorithm
 	//srand(time(NULL));
 	//bitboard move = montecarlo_think(board);
 
 	// Run minimax search
-	bitboard move = minimax_think(board);
+	if(!move){
+		fprintf(stderr, "running minimax\n");
+		move = minimax_think(board);
+	}
 
 	// Print move as QMN
 	char qmn[6];
 	moveQBN(board->bits[board->turn], move, qmn);
+	fprintf(stderr, "move:\t%s\n", qmn);
 	printf("%s\n", qmn);
 
 	Board_destroy(board);
