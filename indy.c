@@ -58,17 +58,17 @@ int main(int argc, char *argv[]){
 	}
 
 	// Seed random and run Monte Carlo algorithm
-	if(!move){
-		fprintf(stderr, "running monte carlo\n");
-		srand(time(NULL));
-		move = montecarlo_think(board);
-	}
+	//if(!move){
+	//	fprintf(stderr, "running monte carlo\n");
+	//	srand(time(NULL));
+	//	move = montecarlo_think(board);
+	//}
 
 	// Run minimax search
-	//if(!move){
-	//	fprintf(stderr, "running minimax\n");
-	//	move = minimax_think(board);
-	//}
+	if(!move){
+		fprintf(stderr, "running minimax\n");
+		move = minimax_think(board);
+	}
 
 	// Print move as QMN
 	char qmn[6];
