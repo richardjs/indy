@@ -2,7 +2,9 @@ CFLAGS=-Wall -g -O3
 
 all: indy
 
-indy: board.o minimax.o montecarlo.o
+indy: board.o minimaxmc.o
+#indy: board.o montecarlo.o
+#indy: board.o minimax.o
 
 clean:
 	rm indy
