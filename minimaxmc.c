@@ -9,7 +9,8 @@
 
 #define randint(x) rand() % x
 
-const int DEPTH = 4;
+const int MAX_DEPTH = 8;
+const int SIM_DEPTH = 4;
 
 const int EVAL_SIMS = 10;
 const int MAX_SIM_DEPTH = 100;
@@ -78,17 +79,8 @@ int simulate(struct Board *board){
 double search(const struct Board *board, double alpha, double beta, int depth){
 	nodesSearched++;
 
-	if(depth == DEPTH){
-		leaves++;
-		double score = 0;
-		struct Board *clone = Board_create();
-		for(int i = 0; i < EVAL_SIMS; i++){
-			*clone = *board;
-			score += simulate(clone);
-		};
-		Board_destroy(clone);
-		score /= EVAL_SIMS;
-		return score;
+	if(depth == MAX_DEPTH){
+		return 0.0;
 	}
 
 	bitboard moves[MAX_MOVES];
@@ -116,6 +108,20 @@ double search(const struct Board *board, double alpha, double beta, int depth){
 		}
 	}
 	Board_destroy(clone);
+
+	if(depth == SIM_DEPTH && bestScore == 0.0){
+		leaves++;
+		double score = 0;
+		struct Board *clone = Board_create();
+		for(int i = 0; i < EVAL_SIMS; i++){
+			*clone = *board;
+			score += simulate(clone);
+		};
+		Board_destroy(clone);
+		score /= EVAL_SIMS;
+		return score;
+	}
+
 
 	return bestScore;
 }
@@ -146,7 +152,6 @@ bitboard minimax_think(const struct Board *board){
 	fprintf(stderr, "score:\t%lf\n", bestScore);
 	fprintf(stderr, "moves:\t%d\n", count);
 	fprintf(stderr, "nodes:\t%luK\n", nodesSearched/1000);
-	fprintf(stderr, "leaves:\t%luK\n", leaves/1000);
 	fprintf(stderr, "prunes:\t%lu\n", prunes);
 	fprintf(stderr, "simulations:\t%luK\n", simulations/1000);
 	fprintf(stderr, "sim moves:\t%luK\n", simulationMoves/1000);
