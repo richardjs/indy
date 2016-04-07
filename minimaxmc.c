@@ -9,7 +9,7 @@
 
 #define randint(x) rand() % x
 
-const int MAX_DEPTH = 10;
+const int MAX_DEPTH = 12;
 const int SIM_DEPTH = 4;
 
 const int EVAL_SIMS = 15;

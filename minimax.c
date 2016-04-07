@@ -6,18 +6,21 @@
 #include <stdio.h>
 #include <time.h>
 
-const int DEPTH = 8;
+const int DEPTH = 9;
 
 uint64_t nodesSearched = 0;
 uint64_t leaves = 0; // non-terminal leaves
 uint64_t prunes = 0;
+
+double evaluate(const struct Board *board){
+}
 
 double search(const struct Board *board, double alpha, double beta, int depth){
 	nodesSearched++;
 
 	if(depth == DEPTH){
 		leaves++;
-		return 0.0;
+		return evaluate(board);
 	}
 
 	bitboard moves[MAX_MOVES];

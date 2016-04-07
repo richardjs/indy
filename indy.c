@@ -1,6 +1,6 @@
 #include "board.h"
-#include "minimax.h"
-#include "montecarlo.h"
+#include "solver.h"
+#include "solver.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -64,10 +64,10 @@ int main(int argc, char *argv[]){
 	//	move = montecarlo_think(board);
 	//}
 
-	// Run minimax search
+	// Run search
 	if(!move){
 		fprintf(stderr, "running minimax\n");
-		move = minimax_think(board);
+		move = solver_think(board);
 	}
 
 	// Print move as QMN
