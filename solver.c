@@ -7,6 +7,7 @@
 #include <time.h>
 
 #define randint(x) rand() % x
+const int ITERATIONS = 100000;
 
 const int MAX_SIM_DEPTH = 100;
 const int MAX_SAFE_MOVE_TRIES = 500;
@@ -48,7 +49,12 @@ struct Node *selectChild(const struct Node *node){
 	struct Node *bestChild = node->children[0];
 	for(int i = 0; i < node->count; i++){
 		struct Node *child = node->children[i];
-		double score = child->value/child->visits;
+
+		if(child->visits == 0){
+			return child;
+		}
+
+		double score = -child->value/child->visits;
 		double uct = score + sqrt(1.0*log(node->visits) / child->visits);
 		if(uct > bestUCT){
 			bestUCT = uct;
@@ -102,7 +108,7 @@ int simulate(struct Board *board){
 	return 0;
 }
 
-double search(struct Node *node){
+double search(struct Node *node, int depth){
 	// if we  have a win, score infinity
 	if(node->count == -1){
 		node->value = INFINITY;
@@ -132,7 +138,7 @@ double search(struct Node *node){
 			result = -simulate(&board);
 			bestChild->visits++;
 		}else{
-			result = -search(bestChild);
+			result = -search(bestChild, depth + 1);
 		}
 	}
 
@@ -141,7 +147,7 @@ double search(struct Node *node){
 		return INFINITY;
 	}else if(result == -INFINITY){
 		for(int i = 0; i < node->count; i++){
-			if(node->children[i]->value != result){
+			if(node->children[i]->value != -INFINITY){
 				result = -1;
 				break;
 			}
@@ -152,7 +158,7 @@ double search(struct Node *node){
 			return -INFINITY;
 		}
 	}
-	
+
 	node->value += result;
 	return result;
 }
@@ -161,19 +167,27 @@ bitboard solver_think(const struct Board *board){
 	time_t start = time(NULL);
 
 	struct Node *node = Node_create(board);
+	node->visits++;
 
-	search(node);
+	for(int i = 0; i < ITERATIONS; i++){
+		search(node, 0);
+	}
 
 	double bestScore = -INFINITY;
-	double bestMove = node->moves[0];
+	int bestChild = 0;
 	for(int i = 0; i < node->count; i++){
 		struct Node *child = node->children[i];;
-		double score = child->value/child->visits + 1/sqrt(child->visits);
+		if(child->visits == 0){
+			continue;
+		}
+		double score = -child->value/child->visits + 1/sqrt(child->visits);
 		if(score > bestScore){
 			bestScore = score;
-			bestMove = node->moves[i];
+			bestChild = i;
 		}
 	}
 
-	return bestMove;
+	struct Node *child = node->children[bestChild];
+	fprintf(stderr, "score:\t%lf\n", -child->value/child->visits);
+	return node->moves[bestChild];
 }

@@ -66,7 +66,7 @@ int main(int argc, char *argv[]){
 
 	// Run search
 	if(!move){
-		fprintf(stderr, "running minimax\n");
+		fprintf(stderr, "running solver\n");
 		move = solver_think(board);
 	}
 

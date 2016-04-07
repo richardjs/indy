@@ -1,10 +1,10 @@
-CFLAGS=-Wall -g -O3
+CFLAGS=-Wall -g -O3 -lm
 
 all: indy
 
 #indy: board.o minimaxmc.o
 #indy: board.o montecarlo.o
-indy: board.o score.o
+indy: board.o solver.o
 
 clean:
 	rm indy
