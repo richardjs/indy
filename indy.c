@@ -1,6 +1,5 @@
 #include "board.h"
-#include "solver.h"
-#include "solver.h"
+#include "minimax.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -66,8 +65,8 @@ int main(int argc, char *argv[]){
 
 	// Run search
 	if(!move){
-		fprintf(stderr, "running solver\n");
-		move = solver_think(board);
+		fprintf(stderr, "running minimax\n");
+		move = minimax_think(board);
 	}
 
 	// Print move as QMN
